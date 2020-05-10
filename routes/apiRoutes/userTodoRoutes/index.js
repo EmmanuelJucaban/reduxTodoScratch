@@ -1,12 +1,25 @@
 const router = require('express').Router();
-const userTodosController = require('../../../controllers/userTodosController');
+const {
+  getUserTodos,
+  deleteUserTodoById,
+  updateTodoById,
+  getAllUserEmails,
+} = require('../../../controllers/userController');
+
 const { requireAuth } = require('../../../middlewares/authMiddlewares');
 
-router.route('/')
-  .get(requireAuth, userTodosController.getUserTodos);
+// /api/user/emails
+router.get('/emails', getAllUserEmails);
 
-router.route('/:todoId')
-  .delete(requireAuth, userTodosController.deleteUserTodoById)
-  .put(requireAuth, userTodosController.updateTodoById);
+// /api/user/todos
+
+
+router.route('/todos')
+  .get(requireAuth, getUserTodos);
+// /api/user/emails
+
+router.route('/todos/:todoId')
+  .delete(requireAuth, deleteUserTodoById)
+  .put(requireAuth, updateTodoById);
 
 module.exports = router;

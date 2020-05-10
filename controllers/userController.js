@@ -1,6 +1,15 @@
 const { User, Todo } = require('../models/index');
 
 module.exports = {
+  getAllUserEmails: async (req, res) => {
+    try {
+      const userEmails = await User.find({}, 'email');
+      if (!userEmails) { return res.status(404).json({ error: 'No user emails found '});}
+      return res.status(200).json(userEmails);
+    } catch (e) {
+      return res.status(403).json({ e });
+    }
+  },
   getUserTodos: async (req, res) => {
     try {
       const todos = await Todo.find({ user: req.user._id });
@@ -16,7 +25,7 @@ module.exports = {
       // First find the todo by Id
       const todoToDelete = await Todo.findById(todoId);
       if (!todoToDelete) {
-        return res.status(401).json({ error: 'No todo with that Id'});
+        return res.status(401).json({ error: 'No todo with that Id' });
       }
       // Check if the todo does not belong to the user.
       // if it doesnt, do not allow the user to delete it
