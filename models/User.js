@@ -46,22 +46,20 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
 UserSchema.pre('save', async function (next) {
   // gets access to the user model that is currently being saved
   const user = this;
-  let salt;
-  let hash;
-  // Gn
   if (user.isModified('password')) {
     try {
-      salt = await bcrypt.genSalt();
-      hash = await bcrypt.hash(user.password, salt);
+      const salt = await bcrypt.genSalt();
+      const hash = await bcrypt.hash(user.password, salt);
+      // overwrite the plain text password with our hash
+      user.password = hash;
+      // Finally call save
+      next();
     } catch (e) {
       // Call save with an error
       next(e);
     }
-    // overwrite the plain text password with our hash
-    user.password = hash;
-    // Finally call save
-    next();
   }
+  next();
 });
 
 module.exports = model('User', UserSchema);
