@@ -5,7 +5,7 @@ module.exports = {
     try {
       const todos = await Todo.find();
       if (!todos) {
-        return res.json({ error: 'No todos found' });
+        return res.status(200).json({ error: 'No todos found' });
       }
       return res.json(todos);
     } catch (error) {
